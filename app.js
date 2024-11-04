@@ -9,19 +9,25 @@ app.use(cors({
     origin: 'https://agrishop-react.onrender.com',  
     credentials: true 
 }));
-app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: true }))
+
+app.use(express.json({ limit: '10mb' })); 
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true })); 
+
+
 app.use(cookieParser());
 app.use(fileUpload());
+
 
 
 //Import all routes 
 const products = require('./routes/product');
 const user = require('./routes/user');
 const order = require('./routes/order');
+const task = require('./routes/task')
 
 app.use('/api', products)
 app.use('/api', user)
 app.use('/api', order)
+app.use('/api', task)
 
 module.exports = app
