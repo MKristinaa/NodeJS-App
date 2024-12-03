@@ -24,10 +24,12 @@ const products = require('./routes/product');
 const user = require('./routes/user');
 const order = require('./routes/order');
 const task = require('./routes/task')
+const bid = require('./routes/bid')
 
 app.use('/api', products)
 app.use('/api', user)
 app.use('/api', order)
 app.use('/api', task)
+app.use('/api', bid)
 
 module.exports = app

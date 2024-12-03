@@ -29,10 +29,10 @@ router.route('/password/update').put(updatePassword);
 
 router.route('/me/update').put(updateProfile);
 
-router.route('/admin/users').get(allUsers);
-router.route('/admin/user/:id').get(getUserDetails);
-router.route('/admin/user/:id').put(updateUser);
-router.route('/admin/user/:id').delete(deleteUser);
+router.route('/users').get(allUsers);
+router.route('/user/:id').get(getUserDetails);
+router.route('/user/:id').put(updateUser);
+router.route('/user/:id').delete(deleteUser);
 
 router.route('/auth/verify-email/:token').get(verifyEmail);
 

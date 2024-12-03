@@ -66,8 +66,8 @@ exports.getTasks = async (req, res, next) => {
             .search()
             .filter();
 
-        // Preuzimamo sve zadatke bez paginacije
-        let tasks = await apiFeatures.query;
+        // Preuzimamo sve zadatke bez paginacije i sortiramo ih po datumu kreiranja
+        let tasks = await apiFeatures.query.sort({ createdAt: -1 }); // Sortiramo silazno
 
         // Računamo ukupan broj zadataka
         const taskCount = await Task.countDocuments();
@@ -180,18 +180,25 @@ exports.deleteTask = async (req, res, next) => {
 exports.getTasksByUserId = async (req, res, next) => {
     const userId = req.params.userId;
 
-    // Find all tasks created by the user with the specified userId
-    const tasks = await Task.find({ user: userId });
+    try {
+        // Find all tasks created by the user with the specified userId and sort them by createdAt
+        const tasks = await Task.find({ user: userId }).sort({ createdAt: -1 }); // Sortiramo silazno
 
-    if (tasks.length === 0) {
-        return res.status(404).json({
+        if (tasks.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'No tasks found for this user'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            tasks
+        });
+    } catch (error) {
+        res.status(500).json({
             success: false,
-            message: 'No tasks found for this user'
+            message: error.message
         });
     }
-
-    res.status(200).json({
-        success: true,
-        tasks
-    });
 };
