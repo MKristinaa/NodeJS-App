@@ -17,17 +17,22 @@ const bidSchema = new mongoose.Schema({
     },
     taskId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Task', // Pretpostavka da postoji model `Task`
+        ref: 'Task',
         required: [true, 'Task ID is required'],
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User', // Pretpostavka da postoji model `User`
+        ref: 'User',
         required: [true, 'User ID is required'],
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'accepted', 'rejected'], // Enum za validaciju
+        default: 'pending', // Podrazumevana vrednost
     },
     createdAt: {
         type: Date,
-        default: Date.now, // Automatski unosi trenutni datum i vreme
+        default: Date.now,
     }
 });
 

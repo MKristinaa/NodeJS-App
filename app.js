@@ -18,7 +18,6 @@ app.use(cookieParser());
 app.use(fileUpload());
 
 
-
 //Import all routes 
 const products = require('./routes/product');
 const user = require('./routes/user');

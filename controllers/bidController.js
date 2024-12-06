@@ -1,4 +1,6 @@
 const Bid = require('../models/bid');
+const Task = require('../models/task');
+const User = require('../models/user');
 
 // Add new bid
 exports.newBid = async (req, res, next) => {
@@ -92,7 +94,6 @@ exports.updateBid = async (req, res, next) => {
 };
 
 // Delete bid
-// Delete bid
 exports.deleteBid = async (req, res, next) => {
     try {
         const bid = await Bid.findById(req.params.id);
@@ -104,7 +105,6 @@ exports.deleteBid = async (req, res, next) => {
             });
         }
 
-        // Koristimo deleteOne() umesto remove()
         await Bid.deleteOne({ _id: req.params.id });
 
         res.status(200).json({
@@ -143,9 +143,8 @@ exports.getBidsByTaskId = async (req, res, next) => {
 // Get bids by user ID
 exports.getBidsByUserId = async (req, res, next) => {
     try {
-        const userId = req.params.userId; // Dobijamo korisnički ID iz parametara
+        const userId = req.params.userId; 
 
-        // Pretražujemo bidove koji odgovaraju korisničkom ID-u
         const bids = await Bid.find({ user: userId });
 
         if (bids.length === 0) {
@@ -164,3 +163,149 @@ exports.getBidsByUserId = async (req, res, next) => {
     }
 };
 
+
+
+// Get tasks by user ID along with bid statuses
+exports.getTasksByUserIdThroughBids = async (req, res, next) => {
+    try {
+        const userId = req.params.userId;
+
+        const bids = await Bid.find({ user: userId });
+
+        if (bids.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'No bids found for this user',
+            });
+        }
+
+        const taskIds = bids.map((bid) => bid.taskId);
+
+        if (taskIds.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'No taskIds found in bids for this user',
+            });
+        }
+
+        const tasks = await Task.find({ _id: { $in: taskIds } });
+
+        if (tasks.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'No tasks found for these bids',
+            });
+        }
+
+        const tasksWithStatus = tasks.map((task) => {
+            const relatedBid = bids.find((bid) => bid.taskId.toString() === task._id.toString());
+            return {
+                task,
+                status: relatedBid?.status,
+            };
+        });
+
+        res.status(200).json({
+            success: true,
+            tasks: tasksWithStatus,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+
+// Get users who bid on a specific task along with their bid for that task
+exports.getUsersByTaskId = async (req, res, next) => {
+    try {
+        const taskId = req.params.taskId;
+
+        // Pronađi sve licitacije za dati zadatak
+        const bids = await Bid.find({ taskId });
+
+        if (bids.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'No bids found for this task',
+            });
+        }
+
+        // Prikupljanje korisničkih ID-ova iz licitacija
+        const userIds = bids.map(bid => bid.user);
+
+        // Pronađi korisnike čiji su ID-ovi u licitacijama
+        const users = await User.find({ _id: { $in: userIds } });
+
+        if (users.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'No users found for these bids',
+            });
+        }
+
+        // Kombinuj korisnike sa njihovim bidovima u jedan objekat
+        const combinedData = users.map(user => {
+            const bid = bids.find(bidItem => bidItem.user.toString() === user._id.toString());
+
+            return {
+                _id: user._id,
+                name: `${user.name} ${user.lastname}`,
+                city: user.city,
+                role: user.role,
+                email: user.email,
+                bidPrice: bid.price,
+                offerDescription: bid.offerDescription,
+                qualifications: bid.qualifications,
+                status: bid.status,
+                taskId: bid.taskId,
+                createdAtBid: bid.createdAt,
+                createdAtUser: user.createdAt
+            };
+        });
+
+        res.status(200).json({
+            success: true,
+            count: combinedData.length,
+            data: combinedData
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+// Update bid status (accept/reject)
+exports.updateBidStatus = async (req, res, next) => {
+    try {
+        const bidId = req.params.id;
+        const { status } = req.body;  // status može biti 'accepted' ili 'rejected'
+
+        if (status !== 'accepted' && status !== 'rejected') {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid status. Use "accepted" or "rejected".'
+            });
+        }
+
+        const updatedBid = await Bid.findByIdAndUpdate(
+            bidId,
+            { status },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedBid) {
+            return res.status(404).json({
+                success: false,
+                message: 'Bid not found'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            bid: updatedBid
+        });
+    } catch (error) {
+        next(error);
+    }
+};
