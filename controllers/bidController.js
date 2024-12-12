@@ -249,7 +249,8 @@ exports.getUsersByTaskId = async (req, res, next) => {
             const bid = bids.find(bidItem => bidItem.user.toString() === user._id.toString());
 
             return {
-                _id: user._id,
+                _id: bid._id,
+                user: user._id,
                 name: `${user.name} ${user.lastname}`,
                 city: user.city,
                 role: user.role,
@@ -305,6 +306,32 @@ exports.updateBidStatus = async (req, res, next) => {
             success: true,
             bid: updatedBid
         });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+// Proveri da li je ulogovani korisnik ostavio bid za dati task
+exports.hasUserBidForTask = async (req, res, next) => {
+    try {
+        const userId = req.params.userId;  
+        const taskId = req.params.taskId;
+
+        // Proveri da li postoji bid sa datim userId i taskId
+        const bid = await Bid.findOne({ user: userId, taskId });
+
+        if (bid) {
+            return res.status(200).json({
+                success: true,
+                hasBid: true
+            });
+        } else {
+            return res.status(200).json({
+                success: true,
+                hasBid: false
+            });
+        }
     } catch (error) {
         next(error);
     }
