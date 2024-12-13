@@ -34,7 +34,8 @@ exports.registerUser = async (req, res, next) => {
             city,
             role,
             email,
-            password
+            password,
+            selectedImage: null
         });
 
         const verificationToken = user.getVerificationToken();
@@ -316,29 +317,30 @@ exports.updateProfile = async (req, res, next) => {
         const newUserData = {
             name: req.body.name,
             lastname: req.body.lastname,
-            email: req.body.email,
-            user: req.body.user
+            city: req.body.city,
         };
 
-        if (req.body.avatar !== '') {
-            const user = await User.findById(req.body.user);
+        let selectedImage = null;
 
+        if (req.body.selectedImage) {
+            console.log("Uploading image to Cloudinary...");
 
-        console.log("Updating user profile for user ID:", req.body.user);
-
-            const image_id = user.avatar.public_id;
-            await cloudinary.v2.uploader.destroy(image_id);
-
-            const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
+            const result = await cloudinary.v2.uploader.upload(req.body.selectedImage, {
                 folder: 'avatars',
                 width: 150,
-                crop: "scale"
+                crop: 'scale'
             });
 
-            newUserData.avatar = {
+            selectedImage = {
                 public_id: result.public_id,
                 url: result.secure_url
             };
+
+            console.log("Image uploaded successfully.");
+        }
+
+        if (selectedImage) {
+            newUserData.selectedImage = selectedImage;  // Čuvaš kao selectedImage
         }
 
         const user = await User.findByIdAndUpdate(req.body.user, newUserData, {
@@ -351,11 +353,12 @@ exports.updateProfile = async (req, res, next) => {
             success: true,
             user
         });
-
     } catch (error) {
-        return next(error); 
+        console.error("Error updating profile:", error);
+        return next(error);
     }
 };
+
 
 
 //Logout user  => /api/logout 

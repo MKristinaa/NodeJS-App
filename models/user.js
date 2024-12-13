@@ -37,6 +37,16 @@ const userSchema = new mongoose.Schema({
         minlength: [6, 'Your password must be longer than 6 characters'],
         select: false
     },
+    selectedImage: {
+        public_id: {
+            type: String,
+            default: null
+        },
+        url: {
+            type: String,
+            default: null
+        }
+    },
     createdAt: {
         type: Date,
         default: Date.now
