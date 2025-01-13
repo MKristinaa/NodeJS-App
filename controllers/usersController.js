@@ -393,10 +393,7 @@ exports.getUserDetails = async(req, res, next) => {
         return next(`User does not found with id: ${req.param.id}`);
     }
 
-    res.status(200).json({
-        success: true,
-        user
-    })
+    res.status(200).json({user})
 }
 
 // User profile update => /api/admin/user/:id
