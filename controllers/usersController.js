@@ -179,23 +179,23 @@ exports.loginUser = async (req, res, next) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-        return res.status(400).json({ message: 'Please enter your email and password' });
+        return res.status(400).json({ message: 'Molimo unesite svoj email i lozinku.' });
     }
 
     const user = await User.findOne({ email }).select('+password');
 
     if (!user) {
-        return res.status(400).json({ message: 'Email or password is not valid' });
+        return res.status(400).json({ message: 'Email ili lozinka nisu validni.' });
     }
 
     if (!user.isVerified) {
-        return res.status(400).json({ message: 'Your account is not verified. Please verify your email before logging in.' });
+        return res.status(400).json({ message: 'Vaš nalog nije verifikovan. Molimo vas da verifikujete svoj email pre prijavljivanja.' });
     }
 
     const isPasswordMatched = await user.comparePassword(password);
 
     if (!isPasswordMatched) {
-        return res.status(400).json({ message: 'Email or password is not valid' });
+        return res.status(400).json({ message: 'Email ili lozinka nisu validni.' });
     }
 
     sendToken(user, 200, res);
