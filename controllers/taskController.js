@@ -94,20 +94,32 @@ exports.getTasks = async (req, res, next) => {
 
 // Get single task
 exports.getSingleTask = async (req, res, next) => {
-    const task = await Task.findById(req.params.id);
+    try {
+        const task = await Task.findById(req.params.id)
+            .populate({
+                path: "user", // Polje koje se popunjava
+                select: "name lastname selectedImage" // Polja koja će biti učitana
+            });
 
-    if (!task) {
-        return res.status(404).json({
+        if (!task) {
+            return res.status(404).json({
+                success: false,
+                message: 'Task not found'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            task
+        });
+    } catch (error) {
+        res.status(500).json({
             success: false,
-            message: 'Task not found'
+            message: error.message
         });
     }
-
-    res.status(200).json({
-        success: true,
-        task
-    });
 };
+
 
 // Update task => /api/v1/task/:id
 exports.updateTask = async (req, res, next) => {
