@@ -1,4 +1,5 @@
 const Task = require('../models/task'); 
+const User = require('../models/user');
 const cloudinary = require('cloudinary');
 
 const APIFeatures = require('../utils/apiFeatures')
@@ -61,22 +62,24 @@ exports.newTask = async (req, res, next) => {
 // Get all tasks
 exports.getTasks = async (req, res, next) => {
     try {
-        // Prvi deo ostaje isti, samo uklonite paginaciju
         let apiFeatures = new APIFeatures(Task.find(), req.query)
             .search()
             .filter();
 
-        // Preuzimamo sve zadatke bez paginacije i sortiramo ih po datumu kreiranja
-        let tasks = await apiFeatures.query.sort({ createdAt: -1 }); // Sortiramo silazno
+        let tasks = await apiFeatures.query
+            .sort({ createdAt: -1 })
+            .populate({
+                path: "user", 
+                select: "name lastname selectedImage" 
+            });
 
-        // Računamo ukupan broj zadataka
         const taskCount = await Task.countDocuments();
 
         res.status(200).json({
             success: true,
             count: tasks.length,
             taskCount,
-            tasks
+            tasks 
         });
     } catch (error) {
         res.status(500).json({
@@ -85,6 +88,7 @@ exports.getTasks = async (req, res, next) => {
         });
     }
 };
+
 
 
 
