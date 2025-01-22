@@ -14,8 +14,8 @@ exports.newTask = async (req, res, next) => {
 
             const result = await cloudinary.v2.uploader.upload(req.body.selectedImage, {
                 folder: 'tasks',
-                width: 150,
-                crop: 'scale'
+                quality: 'auto:best', // Automatski optimizuje kvalitet na najbolji mogući
+                fetch_format: 'auto'
             });
 
             selectedImage = {
