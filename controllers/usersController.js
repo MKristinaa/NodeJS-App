@@ -326,9 +326,7 @@ exports.updateProfile = async (req, res, next) => {
             console.log("Uploading image to Cloudinary...");
 
             const result = await cloudinary.v2.uploader.upload(req.body.selectedImage, {
-                folder: 'avatars',
-                width: 150,
-                crop: 'scale'
+                folder: 'avatars'
             });
 
             selectedImage = {
