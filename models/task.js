@@ -39,6 +39,12 @@ const taskSchema = new mongoose.Schema({
             message: 'Please select the correct class type'
         }
     },
+    studentName: {
+        type: String,
+        default: null,
+        trim: true,
+        maxLength: [50, 'Student name cannot exceed 50 characters']
+    },
     studentAge: {
         type: Number,
         default: null 

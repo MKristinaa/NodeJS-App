@@ -14,7 +14,7 @@ exports.newTask = async (req, res, next) => {
 
             const result = await cloudinary.v2.uploader.upload(req.body.selectedImage, {
                 folder: 'tasks',
-                quality: 'auto:best', // Automatski optimizuje kvalitet na najbolji mogući
+                quality: 'auto:best',
                 fetch_format: 'auto'
             });
 
@@ -28,7 +28,7 @@ exports.newTask = async (req, res, next) => {
             console.log("No image provided in request.");
         }
 
-        const { taskTitle, taskDescription, subject, classType, user } = req.body;
+        const { taskTitle, taskDescription, subject, classType, user, studentName } = req.body;
 
         const studentAge = req.body.studentAge && req.body.studentAge.trim() !== "" ? req.body.studentAge : null;
         const studentGrade = req.body.studentGrade && req.body.studentGrade.trim() !== "" ? req.body.studentGrade : null;
@@ -39,6 +39,7 @@ exports.newTask = async (req, res, next) => {
             taskDescription,
             subject,
             classType,
+            studentName,
             studentAge,
             studentGrade,
             specialNeeds,
@@ -55,9 +56,6 @@ exports.newTask = async (req, res, next) => {
         next(error);
     }
 };
-
-
-
 
 // Get all tasks
 exports.getTasks = async (req, res, next) => {
@@ -89,16 +87,13 @@ exports.getTasks = async (req, res, next) => {
     }
 };
 
-
-
-
 // Get single task
 exports.getSingleTask = async (req, res, next) => {
     try {
         const task = await Task.findById(req.params.id)
             .populate({
-                path: "user", // Polje koje se popunjava
-                select: "name lastname selectedImage" // Polja koja će biti učitana
+                path: "user", 
+                select: "name lastname selectedImage" 
             });
 
         if (!task) {
@@ -120,7 +115,6 @@ exports.getSingleTask = async (req, res, next) => {
     }
 };
 
-
 // Update task => /api/v1/task/:id
 exports.updateTask = async (req, res, next) => {
     try {
@@ -129,6 +123,7 @@ exports.updateTask = async (req, res, next) => {
             taskDescription: req.body.taskDescription,
             subject: req.body.subject,
             classType: req.body.classType,
+            studentName: req.body.studentName || null,
             studentAge: req.body.studentAge,
             studentGrade: req.body.studentGrade,
             specialNeeds: req.body.specialNeeds
@@ -197,8 +192,7 @@ exports.getTasksByUserId = async (req, res, next) => {
     const userId = req.params.userId;
 
     try {
-        // Find all tasks created by the user with the specified userId and sort them by createdAt
-        const tasks = await Task.find({ user: userId }).sort({ createdAt: -1 }); // Sortiramo silazno
+        const tasks = await Task.find({ user: userId }).sort({ createdAt: -1 }); 
 
         if (tasks.length === 0) {
             return res.status(404).json({
