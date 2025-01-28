@@ -238,7 +238,7 @@ exports.getTasksByUserIdThroughBids = async (req, res, next) => {
 // Funkcija za formatiranje datuma u obliku "Dan, Mesec Godina"
 const formatDate = (date) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' }; // Samo dan, mesec i godina
-    return new Date(date).toLocaleDateString('sr-RS', options); // 'sr-RS' za srpski jezik
+    return new Date(date).toLocaleDateString('sr-Latn-RS', options); // 'sr-Latn-RS' za latinicu
 };
 
 exports.getUsersByTaskId = async (req, res, next) => {
