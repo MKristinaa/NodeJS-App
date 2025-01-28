@@ -5,15 +5,33 @@ const User = require('../models/user');
 // Add new bid
 exports.newBid = async (req, res, next) => {
     try {
-        const { price, qualifications, offerDescription, taskId, user } = req.body;
+        const { price, qualifications, offerDescription, taskId, user, deadline, proposedTimes, lessonDuration, lessonMode } = req.body;
 
-        const bid = await Bid.create({
+        // Prvo, proveravamo da li je zadatak validan
+        const task = await Task.findById(taskId);
+
+        if (!task) {
+            return res.status(404).json({
+                success: false,
+                message: 'Task not found'
+            });
+        }
+
+        // Proveravamo da li su specifična polja postavljena na osnovu tipa zadatka
+        const bidData = {
             price,
             qualifications,
             offerDescription,
             taskId,
-            user
-        });
+            user,
+            deadline: deadline || null, // Nullable
+            proposedTimes: proposedTimes || [], // Nullable, empty array if not provided
+            lessonDuration: lessonDuration || null, // Nullable
+            lessonMode: lessonMode || null, // Nullable
+        };
+
+        // Create bid
+        const bid = await Bid.create(bidData);
 
         res.status(201).json({
             success: true,
@@ -23,6 +41,7 @@ exports.newBid = async (req, res, next) => {
         next(error);
     }
 };
+
 
 // Get all bids
 exports.getBids = async (req, res, next) => {
@@ -282,7 +301,7 @@ exports.updateBidStatus = async (req, res, next) => {
         const bidId = req.params.id;
         const { status } = req.body;  // status može biti 'accepted' ili 'rejected'
 
-        if (status !== 'accepted' && status !== 'rejected') {
+        if (status !== 'prihvaćeno' && status !== 'odbijeno') {
             return res.status(400).json({
                 success: false,
                 message: 'Invalid status. Use "accepted" or "rejected".'
