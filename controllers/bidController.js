@@ -235,7 +235,7 @@ exports.getTasksByUserIdThroughBids = async (req, res, next) => {
 
 
 
-// Get users who bid on a specific task along with their bid for that task
+// OVO KORISTIM ZA PRIKAZ LICITACIJA SA PODACIMAO ONOME KO JE LICITIRAO
 exports.getUsersByTaskId = async (req, res, next) => {
     try {
         const taskId = req.params.taskId;
@@ -270,16 +270,21 @@ exports.getUsersByTaskId = async (req, res, next) => {
             return {
                 _id: bid._id,
                 user: user._id,
+                selectedImage: user.selectedImage.url,
                 name: `${user.name} ${user.lastname}`,
                 city: user.city,
                 role: user.role,
                 email: user.email,
-                bidPrice: bid.price,
-                offerDescription: bid.offerDescription,
-                qualifications: bid.qualifications,
-                status: bid.status,
+                bidPrice: bid.price, 
+                offerDescription: bid.offerDescription, 
+                qualifications: bid.qualifications, 
+                status: bid.status, 
                 taskId: bid.taskId,
-                createdAtBid: bid.createdAt,
+                createdAtBid: bid.createdAt, 
+                deadline: bid.deadline ?? null, 
+                proposedTimes: bid.proposedTimes?.length ? bid.proposedTimes : [], 
+                lessonDuration: bid.lessonDuration ?? null, 
+                lessonMode: bid.lessonMode ?? null, 
                 createdAtUser: user.createdAt
             };
         });
