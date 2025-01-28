@@ -235,7 +235,12 @@ exports.getTasksByUserIdThroughBids = async (req, res, next) => {
 
 
 
-// OVO KORISTIM ZA PRIKAZ LICITACIJA SA PODACIMAO ONOME KO JE LICITIRAO
+// Funkcija za formatiranje datuma u obliku "Dan, Mesec Godina"
+const formatDate = (date) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' }; // Samo dan, mesec i godina
+    return new Date(date).toLocaleDateString('sr-RS', options); // 'sr-RS' za srpski jezik
+};
+
 exports.getUsersByTaskId = async (req, res, next) => {
     try {
         const taskId = req.params.taskId;
@@ -280,12 +285,12 @@ exports.getUsersByTaskId = async (req, res, next) => {
                 qualifications: bid.qualifications, 
                 status: bid.status, 
                 taskId: bid.taskId,
-                createdAtBid: bid.createdAt, 
-                deadline: bid.deadline ?? null, 
+                createdAtBid: formatDate(bid.createdAt), // Formatiraj datum
+                deadline: bid.deadline ? formatDate(bid.deadline) : null, // Formatiraj deadline ako postoji
                 proposedTimes: bid.proposedTimes?.length ? bid.proposedTimes : [], 
                 lessonDuration: bid.lessonDuration ?? null, 
                 lessonMode: bid.lessonMode ?? null, 
-                createdAtUser: user.createdAt
+                createdAtUser: formatDate(user.createdAt) // Formatiraj datum kada je korisnik kreiran
             };
         });
 
@@ -298,6 +303,7 @@ exports.getUsersByTaskId = async (req, res, next) => {
         next(error);
     }
 };
+
 
 
 // Update bid status (accept/reject)
