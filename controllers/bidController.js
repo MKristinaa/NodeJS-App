@@ -287,7 +287,9 @@ exports.getUsersByTaskId = async (req, res, next) => {
                 taskId: bid.taskId,
                 createdAtBid: formatDate(bid.createdAt), // Formatiraj datum
                 deadline: bid.deadline ? formatDate(bid.deadline) : null, // Formatiraj deadline ako postoji
-                proposedTimes: bid.proposedTimes?.length ? bid.proposedTimes : [], 
+                proposedTimes: bid.proposedTimes?.length 
+                ? bid.proposedTimes.map(time => formatDate(time))  // Formatiraj svaki datum u proposedTimes
+                : [], 
                 lessonDuration: bid.lessonDuration ?? null, 
                 lessonMode: bid.lessonMode ?? null, 
                 createdAtUser: formatDate(user.createdAt) // Formatiraj datum kada je korisnik kreiran
