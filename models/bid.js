@@ -40,8 +40,8 @@ const bidSchema = new mongoose.Schema({
     },
     lessonMode: {
         type: String,
-        enum: ['online', 'uživo', 'oba'], 
-        default: null, // Nullable, no conditions
+        enum: ['online', 'uživo'], 
+        default: null, 
     },
     createdAt: {
         type: Date,
