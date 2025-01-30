@@ -5,9 +5,8 @@ const User = require('../models/user');
 // Add new bid
 exports.newBid = async (req, res, next) => {
     try {
-        const { price, qualifications, offerDescription, taskId, user, deadline, proposedTimes, lessonDuration, lessonMode } = req.body;
+        const { price, qualifications, offerDescription, taskId, user, proposedTimes, lessonDuration, lessonMode } = req.body;
 
-        // Prvo, proveravamo da li je zadatak validan
         const task = await Task.findById(taskId);
 
         if (!task) {
@@ -17,20 +16,17 @@ exports.newBid = async (req, res, next) => {
             });
         }
 
-        // Proveravamo da li su specifična polja postavljena na osnovu tipa zadatka
         const bidData = {
             price,
             qualifications,
             offerDescription,
             taskId,
             user,
-            deadline: deadline || null, // Nullable
-            proposedTimes: proposedTimes || [], // Nullable, empty array if not provided
-            lessonDuration: lessonDuration || null, // Nullable
-            lessonMode: lessonMode || null, // Nullable
+            proposedTimes: proposedTimes || [],
+            lessonDuration: lessonDuration || null, 
+            lessonMode: lessonMode || null, 
         };
 
-        // Create bid
         const bid = await Bid.create(bidData);
 
         res.status(201).json({
@@ -159,6 +155,7 @@ exports.getBidsByTaskId = async (req, res, next) => {
     }
 };
 
+
 // Get bids by user ID
 exports.getBidsByUserId = async (req, res, next) => {
     try {
@@ -237,15 +234,14 @@ exports.getTasksByUserIdThroughBids = async (req, res, next) => {
 
 // Funkcija za formatiranje datuma u obliku "Dan, Mesec Godina"
 const formatDate = (date) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' }; // Samo dan, mesec i godina
-    return new Date(date).toLocaleDateString('sr-Latn-RS', options); // 'sr-Latn-RS' za latinicu
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(date).toLocaleDateString('sr-Latn-RS', options); 
 };
 
 exports.getUsersByTaskId = async (req, res, next) => {
     try {
         const taskId = req.params.taskId;
 
-        // Pronađi sve licitacije za dati zadatak
         const bids = await Bid.find({ taskId });
 
         if (bids.length === 0) {
@@ -255,10 +251,8 @@ exports.getUsersByTaskId = async (req, res, next) => {
             });
         }
 
-        // Prikupljanje korisničkih ID-ova iz licitacija
         const userIds = bids.map(bid => bid.user);
 
-        // Pronađi korisnike čiji su ID-ovi u licitacijama
         const users = await User.find({ _id: { $in: userIds } });
 
         if (users.length === 0) {
@@ -268,7 +262,6 @@ exports.getUsersByTaskId = async (req, res, next) => {
             });
         }
 
-        // Kombinuj korisnike sa njihovim bidovima u jedan objekat
         const combinedData = users.map(user => {
             const bid = bids.find(bidItem => bidItem.user.toString() === user._id.toString());
 
@@ -285,14 +278,13 @@ exports.getUsersByTaskId = async (req, res, next) => {
                 qualifications: bid.qualifications, 
                 status: bid.status, 
                 taskId: bid.taskId,
-                createdAtBid: formatDate(bid.createdAt), // Formatiraj datum
-                deadline: bid.deadline ? formatDate(bid.deadline) : null, // Formatiraj deadline ako postoji
+                createdAtBid: formatDate(bid.createdAt), 
                 proposedTimes: bid.proposedTimes?.length 
-                ? bid.proposedTimes.map(time => formatDate(time))  // Formatiraj svaki datum u proposedTimes
+                ? bid.proposedTimes.map(time => formatDate(time)) 
                 : [], 
                 lessonDuration: bid.lessonDuration ?? null, 
                 lessonMode: bid.lessonMode ?? null, 
-                createdAtUser: formatDate(user.createdAt) // Formatiraj datum kada je korisnik kreiran
+                createdAtUser: formatDate(user.createdAt) 
             };
         });
 
@@ -312,7 +304,7 @@ exports.getUsersByTaskId = async (req, res, next) => {
 exports.updateBidStatus = async (req, res, next) => {
     try {
         const bidId = req.params.id;
-        const { status } = req.body;  // status može biti 'accepted' ili 'rejected'
+        const { status } = req.body;  
 
         if (status !== 'prihvaćeno' && status !== 'odbijeno') {
             return res.status(400).json({
@@ -350,7 +342,6 @@ exports.hasUserBidForTask = async (req, res, next) => {
         const userId = req.params.userId;  
         const taskId = req.params.taskId;
 
-        // Proveri da li postoji bid sa datim userId i taskId
         const bid = await Bid.findOne({ user: userId, taskId });
 
         if (bid) {

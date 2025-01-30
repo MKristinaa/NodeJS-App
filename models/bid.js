@@ -30,10 +30,6 @@ const bidSchema = new mongoose.Schema({
         enum: ['u procesu', 'prihvaćeno', 'odbijeno'], 
         default: 'u procesu', 
     },
-    deadline: {
-        type: Date,
-        default: null, // Nullable, no conditions
-    },
     proposedTimes: {
         type: [Date],
         default: [], // Nullable, no conditions

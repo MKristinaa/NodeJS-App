@@ -10,7 +10,6 @@ exports.registerUser = async (req, res, next) => {
     try {
         const { name, lastname, city, role, email, password } = req.body;
 
-        // Proveri da li su svi podaci popunjeni
         if (!name || !lastname || !city || !role || !email || !password) {
             return res.status(400).json({
                 success: false,
@@ -18,7 +17,6 @@ exports.registerUser = async (req, res, next) => {
             });
         }
 
-        // Proveri da li korisnik već postoji
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({
@@ -27,7 +25,6 @@ exports.registerUser = async (req, res, next) => {
             });
         }
 
-        // Kreiraj novog korisnika
         const user = await User.create({
             name,
             lastname,
@@ -325,12 +322,6 @@ exports.updateProfile = async (req, res, next) => {
         if (req.body.selectedImage) {
             console.log("Uploading image to Cloudinary...");
 
-            // const result = await cloudinary.v2.uploader.upload(req.body.selectedImage, {
-            //     folder: 'avatars',
-            //     quality: 'auto:best',
-            //     fetch_format: 'auto'
-            // });
-
             const result = await cloudinary.v2.uploader.upload(req.body.selectedImage, {
                 folder: 'avatars',        
                 quality: 'auto:best',     
@@ -348,7 +339,7 @@ exports.updateProfile = async (req, res, next) => {
         }
 
         if (selectedImage) {
-            newUserData.selectedImage = selectedImage;  // Čuvaš kao selectedImage
+            newUserData.selectedImage = selectedImage; 
         }
 
         const user = await User.findByIdAndUpdate(req.body.user, newUserData, {
