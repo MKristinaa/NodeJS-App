@@ -32,11 +32,11 @@ const bidSchema = new mongoose.Schema({
     },
     proposedTimes: {
         type: [Date],
-        default: [], // Nullable, no conditions
+        default: [],
     },
     lessonDuration: {
         type: Number, 
-        default: null, // Nullable, no conditions
+        default: null, 
     },
     lessonMode: {
         type: String,
