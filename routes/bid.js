@@ -12,7 +12,8 @@ const {
     getTasksByUserIdThroughBids,
     getUsersByTaskId,
     updateBidStatus,
-    hasUserBidForTask
+    hasUserBidForTask,
+    getBidByUserAndTask
 } = require('../controllers/bidController');
 
 router.route('/bids').get(getBids);
@@ -24,12 +25,12 @@ router.route('/bids/task/:taskId').get(getBidsByTaskId);
 router.route('/bids/user/:userId').get(getBidsByUserId);
 router.route('/bids2/user/:userId').get(getTasksByUserIdThroughBids);
 
-// Dodavanje nove rute
 router.route('/bids/task/:taskId/users').get(getUsersByTaskId);
 
-// Ruta za update statusa bid-a
 router.route('/bids/:id/status').put(updateBidStatus);
 router.route('/bids/task/:taskId/:userId/hasUserBid').get(hasUserBidForTask);
+
+router.route('/bid/task/:taskId/user/:userId').get(getBidByUserAndTask);
 
 
 module.exports = router;

@@ -359,3 +359,27 @@ exports.hasUserBidForTask = async (req, res, next) => {
         next(error);
     }
 };
+
+// Get bid by user ID and task ID
+exports.getBidByUserAndTask = async (req, res, next) => {
+    try {
+        const { userId, taskId } = req.params;
+
+        const bid = await Bid.findOne({ user: userId, taskId });
+
+        if (!bid) {
+            return res.status(404).json({
+                success: false,
+                message: 'No bid found for this user and task'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            bid
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
