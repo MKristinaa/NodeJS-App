@@ -67,10 +67,6 @@ const taskSchema = new mongoose.Schema({
             default: null 
         }
     },
-    deadline: {
-        type: Date,
-        required: [true, 'Please enter a deadline for the task']
-    },
     user: {
         type: mongoose.Schema.ObjectId,
         ref: 'User',
