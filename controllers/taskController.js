@@ -31,6 +31,7 @@ exports.newTask = async (req, res, next) => {
         const { taskTitle, taskDescription, subject, classType, user } = req.body;
 
 
+        const deadline = req.body.deadline && req.body.deadline.trim() !== "" ? req.body.deadline : null;
         const studentName = req.body.studentName && req.body.studentName.trim() !== "" ? req.body.studentName : null;
         const studentAge = req.body.studentAge && req.body.studentAge.trim() !== "" ? req.body.studentAge : null;
         const studentGrade = req.body.studentGrade && req.body.studentGrade.trim() !== "" ? req.body.studentGrade : null;
@@ -41,6 +42,7 @@ exports.newTask = async (req, res, next) => {
             taskDescription,
             subject,
             classType,
+            deadline,
             studentName,
             studentAge,
             studentGrade,
@@ -125,6 +127,7 @@ exports.updateTask = async (req, res, next) => {
             taskDescription: req.body.taskDescription,
             subject: req.body.subject,
             classType: req.body.classType,
+            deadline:req.body.deadline,
             studentName: req.body.studentName || null,
             studentAge: req.body.studentAge,
             studentGrade: req.body.studentGrade,
