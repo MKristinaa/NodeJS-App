@@ -9,11 +9,11 @@ const bidSchema = new mongoose.Schema({
     qualifications: {
         type: String,
         required: [true, 'Molimo unesite kvalifikacije'],
-        maxLength: [100, 'Kvalifikacije ne mogu imati više od 100 karaktera'],
+        maxLength: [1000, 'Kvalifikacije ne mogu imati više od 100 karaktera'],
     },
     offerDescription: {
         type: String,
-        maxLength: [100, 'Opis ponude ne može imati više od 100 karaktera'],
+        maxLength: [1000, 'Opis ponude ne može imati više od 100 karaktera'],
     },
     taskId: {
         type: mongoose.Schema.Types.ObjectId,
