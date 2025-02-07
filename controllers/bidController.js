@@ -326,6 +326,12 @@ exports.updateBidStatus = async (req, res, next) => {
             });
         }
 
+         // Ako je bid prihvaćen, ažuriramo status zadatka na "Zatvorena"
+         if (updatedBid.status === 'prihvaćeno') {
+            await Task.findByIdAndUpdate(updatedBid.taskId, { status: 'Zatvorena' });
+        }
+
+        
         res.status(200).json({
             success: true,
             bid: updatedBid

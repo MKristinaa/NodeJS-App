@@ -28,7 +28,7 @@ exports.newTask = async (req, res, next) => {
             console.log("No image provided in request.");
         }
 
-        const { taskTitle, taskDescription, subject, classType, user } = req.body;
+        const { taskTitle, taskDescription, subject, classType, user, status = 'Otvorena' } = req.body;
 
 
         const studentName = req.body.studentName && req.body.studentName.trim() !== "" ? req.body.studentName : null;
@@ -46,6 +46,7 @@ exports.newTask = async (req, res, next) => {
             studentGrade,
             specialNeeds,
             selectedImage, 
+            status,
             user
         });
 
@@ -128,7 +129,8 @@ exports.updateTask = async (req, res, next) => {
             studentName: req.body.studentName || null,
             studentAge: req.body.studentAge,
             studentGrade: req.body.studentGrade,
-            specialNeeds: req.body.specialNeeds
+            specialNeeds: req.body.specialNeeds,
+            status: req.body.status || "Otvorena"
         };
 
         if (req.body.selectedImage !== '') {

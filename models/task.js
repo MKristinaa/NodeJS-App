@@ -67,6 +67,14 @@ const taskSchema = new mongoose.Schema({
             default: null 
         }
     },
+    status: {
+        type: String,
+        enum: {
+            values: ['Otvorena', 'Završena'],
+            message: 'Please select a valid status'
+        },
+        default: 'Otvorena'
+    },
     user: {
         type: mongoose.Schema.ObjectId,
         ref: 'User',
