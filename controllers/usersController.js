@@ -25,6 +25,7 @@ exports.registerUser = async (req, res, next) => {
             });
         }
 
+        // ✅ automatski verifikovan korisnik
         const user = await User.create({
             name,
             lastname,
@@ -32,11 +33,13 @@ exports.registerUser = async (req, res, next) => {
             role,
             email,
             password,
+            isVerified: true,
             selectedImage: null
         });
 
+        //EMAIL VERIFIKACIJA
+        /*
         const verificationToken = user.getVerificationToken();
-
         await user.save({ validateBeforeSave: false });
 
         const verificationUrl = `${req.protocol}://${req.get('host')}/api/auth/verify-email/${verificationToken}`;
@@ -48,10 +51,11 @@ exports.registerUser = async (req, res, next) => {
             subject: 'Email Verification',
             message
         });
+        */
 
         res.status(200).json({
             success: true,
-            message: `Verification email sent to: ${user.email}`
+            message: `User registered successfully (auto-verified).`
         });
     } catch (error) {
         return next(error);
