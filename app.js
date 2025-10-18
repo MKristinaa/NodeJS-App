@@ -18,7 +18,6 @@ app.use(cookieParser());
 app.use(fileUpload());
 
 
-//Import all routes 
 const user = require('./routes/user');
 const task = require('./routes/task')
 const bid = require('./routes/bid')

@@ -5,7 +5,7 @@ const cloudinary = require('cloudinary')
 
 const crypto = require('crypto')
 
-//register user
+
 exports.registerUser = async (req, res, next) => {
     try {
         const { name, lastname, city, role, email, password } = req.body;
@@ -170,8 +170,6 @@ exports.verifyEmail = async (req, res, next) => {
 
 
 
-
-// Login user
 exports.loginUser = async (req, res, next) => {
     const { email, password } = req.body;
 
@@ -199,7 +197,7 @@ exports.loginUser = async (req, res, next) => {
 };
 
 
-//Forgot password => /api/passwprd/forgot
+
 exports.forgotPassword = async (req, res, next) => {
 
     const user = await User.findOne({ email: req.body.email });
@@ -241,7 +239,7 @@ exports.forgotPassword = async (req, res, next) => {
 
 
 
-//Reset password => /api/passwprd/reset/:token
+
 exports.resetPassword = async (req, res, next) => {
 
     const resetPasswordToken = crypto.createHash('sha256').update(req.params.token).digest('hex')
@@ -270,7 +268,7 @@ exports.resetPassword = async (req, res, next) => {
 }
 
 
-//Get currently logged in user details
+
 exports.getUserProfile = async (req, res, next) => {
     const user = await User.findById(req.params.id);
 
@@ -280,7 +278,8 @@ exports.getUserProfile = async (req, res, next) => {
     })
 }
 
-// Update password => /api/password/update
+
+
 exports.updatePassword = async (req, res, next) => {
     try {
         if (!req.body.password) {
@@ -305,10 +304,6 @@ exports.updatePassword = async (req, res, next) => {
 
 
 
-
-
-
-// Update user profile   =>   /api/v1/me/update
 exports.updateProfile = async (req, res, next) => {
     try {
         const newUserData = {
@@ -360,7 +355,7 @@ exports.updateProfile = async (req, res, next) => {
 
 
 
-//Logout user  => /api/logout 
+
 exports.logout = async(req, res, next) => {
     res.cookie('token', null, {
         expires: new Date(Date.now()),
@@ -374,7 +369,7 @@ exports.logout = async(req, res, next) => {
 }
 
 
-//Get All Users => /api/users
+
 exports.allUsers = async(req, res, next) => {
     const users = await User.find();
 
@@ -384,7 +379,8 @@ exports.allUsers = async(req, res, next) => {
     })
 }
 
-//Get User Details
+
+
 exports.getUserDetails = async(req, res, next) => {
     const user = await User.findById(req.params.id);
 
@@ -395,7 +391,8 @@ exports.getUserDetails = async(req, res, next) => {
     res.status(200).json({user})
 }
 
-// User profile update => /api/admin/user/:id
+
+
 exports.updateUser = async(req, res, next) => {
     const newUserData = {
         name: req.body.name,
@@ -425,7 +422,8 @@ exports.updateUser = async(req, res, next) => {
     });
 }
 
-//Delete User=> /api/delete 
+
+
 exports.deleteUser = async (req, res, next) => {
 
     const user = await User.findById(req.params.id);

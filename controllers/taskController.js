@@ -4,7 +4,7 @@ const cloudinary = require('cloudinary');
 
 const APIFeatures = require('../utils/apiFeatures')
 
-// Add new task
+
 exports.newTask = async (req, res, next) => {
     try {
         let selectedImage = null;
@@ -60,7 +60,8 @@ exports.newTask = async (req, res, next) => {
     }
 };
 
-// Get all tasks
+
+
 exports.getTasks = async (req, res, next) => {
     try {
         let apiFeatures = new APIFeatures(Task.find(), req.query)
@@ -90,7 +91,8 @@ exports.getTasks = async (req, res, next) => {
     }
 };
 
-// Get single task
+
+
 exports.getSingleTask = async (req, res, next) => {
     try {
         const task = await Task.findById(req.params.id)
@@ -118,7 +120,8 @@ exports.getSingleTask = async (req, res, next) => {
     }
 };
 
-// Update task => /api/v1/task/:id
+
+
 exports.updateTask = async (req, res, next) => {
     try {
         const newTaskData = {
@@ -172,7 +175,8 @@ exports.updateTask = async (req, res, next) => {
     }
 };
 
-// Delete task
+
+
 exports.deleteTask = async (req, res, next) => {
     const task = await Task.findById(req.params.id);
 
@@ -191,7 +195,8 @@ exports.deleteTask = async (req, res, next) => {
     });
 };
 
-// Get tasks by user ID => /api/v1/tasks/user/:userId
+
+
 exports.getTasksByUserId = async (req, res, next) => {
     const userId = req.params.userId;
 

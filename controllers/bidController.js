@@ -2,7 +2,7 @@ const Bid = require('../models/bid');
 const Task = require('../models/task');
 const User = require('../models/user');
 
-// Add new bid
+
 exports.newBid = async (req, res, next) => {
     try {
         const { price, qualifications, offerDescription, taskId, user, proposedTimes, lessonDuration, lessonMode } = req.body;
@@ -39,7 +39,7 @@ exports.newBid = async (req, res, next) => {
 };
 
 
-// Get all bids
+
 exports.getBids = async (req, res, next) => {
     try {
         const bids = await Bid.find();
@@ -57,7 +57,7 @@ exports.getBids = async (req, res, next) => {
     }
 };
 
-// Get single bid
+
 exports.getSingleBid = async (req, res, next) => {
     try {
         const bid = await Bid.findById(req.params.id);
@@ -78,7 +78,8 @@ exports.getSingleBid = async (req, res, next) => {
     }
 };
 
-// Update bid
+
+
 exports.updateBid = async (req, res, next) => {
     try {
         const updatedData = {
@@ -108,7 +109,8 @@ exports.updateBid = async (req, res, next) => {
     }
 };
 
-// Delete bid
+
+
 exports.deleteBid = async (req, res, next) => {
     try {
         const bid = await Bid.findById(req.params.id);
@@ -132,7 +134,7 @@ exports.deleteBid = async (req, res, next) => {
 };
 
 
-// Get bids by task ID
+
 exports.getBidsByTaskId = async (req, res, next) => {
     try {
         const taskId = req.params.taskId;
@@ -156,7 +158,7 @@ exports.getBidsByTaskId = async (req, res, next) => {
 };
 
 
-// Get bids by user ID
+
 exports.getBidsByUserId = async (req, res, next) => {
     try {
         const userId = req.params.userId; 
@@ -181,7 +183,6 @@ exports.getBidsByUserId = async (req, res, next) => {
 
 
 
-// Get tasks by user ID along with bid statuses
 exports.getTasksByUserIdThroughBids = async (req, res, next) => {
     try {
         const userId = req.params.userId;
@@ -231,12 +232,12 @@ exports.getTasksByUserIdThroughBids = async (req, res, next) => {
 };
 
 
-
-// Funkcija za formatiranje datuma u obliku "Dan, Mesec Godina"
 const formatDate = (date) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(date).toLocaleDateString('sr-Latn-RS', options); 
 };
+
+
 
 exports.getUsersByTaskId = async (req, res, next) => {
     try {
@@ -300,7 +301,6 @@ exports.getUsersByTaskId = async (req, res, next) => {
 
 
 
-// Update bid status (accept/reject)
 exports.updateBidStatus = async (req, res, next) => {
     try {
         const bidId = req.params.id;
@@ -326,7 +326,7 @@ exports.updateBidStatus = async (req, res, next) => {
             });
         }
 
-         // Ako je bid prihvaćen, ažuriramo status zadatka na "Zatvorena"
+     
          if (updatedBid.status === 'prihvaćeno') {
             await Task.findByIdAndUpdate(updatedBid.taskId, { status: 'Zatvorena' });
         }
@@ -342,7 +342,7 @@ exports.updateBidStatus = async (req, res, next) => {
 };
 
 
-// Proveri da li je ulogovani korisnik ostavio bid za dati task
+
 exports.hasUserBidForTask = async (req, res, next) => {
     try {
         const userId = req.params.userId;  
@@ -366,7 +366,8 @@ exports.hasUserBidForTask = async (req, res, next) => {
     }
 };
 
-// Get bid by user ID and task ID
+
+
 exports.getBidByUserAndTask = async (req, res, next) => {
     try {
         const { userId, taskId } = req.params;
